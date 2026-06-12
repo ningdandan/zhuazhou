@@ -1,0 +1,1394 @@
+<html lang="en" vid="0"><head vid="1">
+    <meta charset="UTF-8" vid="2">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" vid="3">
+    <title vid="4">AETHER // CHROME ARCHIVE</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" vid="5">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="" vid="6">
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300;1,600&amp;family=JetBrains+Mono:wght@100;400;700&amp;family=Syncopate:wght@400;700&amp;display=swap" rel="stylesheet" vid="7">
+    <style vid="8">
+        :root {
+            
+            --env-1: #aab0b4;
+            --env-2: #b5a8a4;
+            --env-3: #9fabad;
+            
+            
+            --chrome-light: #ffffff;
+            --chrome-base: #a0a5ab;
+            --chrome-dark: #1a1b1d;
+            --chrome-shadow: #050505;
+            --chrome-highlight-cyan: rgba(0, 255, 255, 0.15);
+            --chrome-highlight-mag: rgba(255, 0, 255, 0.1);
+
+            
+            --font-display: 'Cormorant Garamond', serif; 
+            --font-tech: 'JetBrains Mono', monospace;    
+            --font-bold: 'Syncopate', sans-serif;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        body {
+            background: 
+                radial-gradient(circle at 10% 0%, rgba(80, 88, 96, 0.18) 0%, transparent 52%),
+                radial-gradient(circle at 90% 100%, rgba(72, 78, 84, 0.16) 0%, transparent 56%),
+                radial-gradient(circle at 50% 50%, rgba(96, 106, 116, 0.12) 0%, transparent 72%),
+                #050607;
+            color: #fff;
+            height: 100vh;
+            width: 100vw;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            font-family: var(--font-tech);
+        }
+
+        body.show-all {
+            overflow: auto;
+        }
+
+        body.single-card {
+            overflow: hidden;
+        }
+
+        body.route-loading main {
+            opacity: 0;
+            transition: opacity 0.24s ease;
+        }
+
+        body:not(.route-loading) main {
+            opacity: 1;
+            transition: opacity 0.24s ease;
+        }
+
+        
+        header {
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            z-index: 10;
+        }
+
+        .hud-block {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .hud-label {
+            font-size: 0.55rem;
+            text-transform: uppercase;
+            letter-spacing: 0.2em;
+            color: rgba(255,255,255,0.5);
+        }
+
+        .hud-value {
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.05em;
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255,255,255,0.3);
+        }
+
+        
+        main {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            overflow-x: auto;
+            overflow-y: hidden;
+            scroll-snap-type: x mandatory;
+            padding: 0 50vw 0 2rem; 
+            gap: 2rem;
+            
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+        main::-webkit-scrollbar { display: none; }
+
+        body.show-all main {
+            overflow-x: hidden;
+            overflow-y: auto;
+            scroll-snap-type: none;
+            padding: 1.5rem 2rem 2rem;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            align-content: flex-start;
+        }
+
+        body.single-card main {
+            overflow: hidden;
+            scroll-snap-type: none;
+            padding: 0 2rem;
+            gap: 0;
+            justify-content: center;
+        }
+
+        .card-container {
+            scroll-snap-align: center;
+            flex-shrink: 0;
+            perspective: 1000px;
+            width: 75vw;
+            max-width: 340px;
+            aspect-ratio: 0.64; 
+            position: relative;
+        }
+
+        body.show-all .card-container {
+            width: min(30vw, 320px);
+            min-width: 260px;
+            max-width: 320px;
+            animation: none;
+        }
+
+        body.single-card .card-container {
+            display: none;
+            animation: none;
+        }
+
+        body.single-card .card-container.route-active {
+            display: block;
+            width: 75vw;
+            max-width: 340px;
+            min-width: 0;
+        }
+
+        .card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.7s cubic-bezier(0.22, 0.61, 0.36, 1);
+            transform: rotateY(0deg);
+            cursor: pointer;
+        }
+
+        .card-container {
+            animation: float 6s ease-in-out infinite;
+        }
+        .card-container:nth-child(2) { animation-delay: -2s; }
+        .card-container:nth-child(3) { animation-delay: -4s; }
+        .card.is-flipped { transform: rotateY(180deg); }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotateX(2deg) rotateY(-2deg); }
+            50% { transform: translateY(-10px) rotateX(-1deg) rotateY(2deg); }
+        }
+
+        
+        .chrome-frame {
+            position: absolute;
+            inset: 0;
+            backface-visibility: hidden;
+            
+            clip-path: polygon(
+                0% 20px, 
+                20px 0%, 
+                calc(100% - 40px) 0%, 
+                100% 40px, 
+                100% calc(100% - 20px), 
+                calc(100% - 20px) 100%, 
+                40px 100%, 
+                0% calc(100% - 40px)
+            );
+            
+            
+            background: linear-gradient(135deg, 
+                var(--chrome-light) 0%, 
+                var(--chrome-base) 15%, 
+                var(--chrome-dark) 20%, 
+                var(--chrome-shadow) 22%, 
+                var(--chrome-base) 25%, 
+                var(--chrome-light) 40%, 
+                var(--chrome-dark) 60%, 
+                var(--chrome-shadow) 62%, 
+                var(--chrome-base) 65%, 
+                var(--chrome-light) 100%
+            );
+            
+            padding: 8px; 
+            box-shadow: 
+                inset 2px 2px 5px rgba(255,255,255,0.8),
+                inset -2px -2px 10px rgba(0,0,0,0.8);
+        }
+
+        .card-back-face {
+            position: absolute;
+            inset: 0;
+            backface-visibility: hidden;
+            transform: rotateY(180deg);
+            clip-path: polygon(
+                0% 20px,
+                20px 0%,
+                calc(100% - 40px) 0%,
+                100% 40px,
+                100% calc(100% - 20px),
+                calc(100% - 20px) 100%,
+                40px 100%,
+                0% calc(100% - 40px)
+            );
+            background: linear-gradient(135deg, 
+                var(--chrome-light) 0%, 
+                var(--chrome-base) 15%, 
+                var(--chrome-dark) 20%, 
+                var(--chrome-shadow) 22%, 
+                var(--chrome-base) 25%, 
+                var(--chrome-light) 40%, 
+                var(--chrome-dark) 60%, 
+                var(--chrome-shadow) 62%, 
+                var(--chrome-base) 65%, 
+                var(--chrome-light) 100%
+            );
+            padding: 8px;
+            box-shadow:
+                inset 2px 2px 5px rgba(255,255,255,0.8),
+                inset -2px -2px 10px rgba(0,0,0,0.8);
+        }
+
+        .card-back-inner {
+            width: 100%;
+            height: 100%;
+            clip-path: polygon(
+                0% 15px,
+                15px 0%,
+                calc(100% - 30px) 0%,
+                100% 30px,
+                100% calc(100% - 15px),
+                calc(100% - 15px) 100%,
+                30px 100%,
+                0% calc(100% - 30px)
+            );
+            background-color: #000;
+            background-image: url("file:///Users/ada/.cursor/projects/Users-ada-Downloads-zhuazhou/assets/image-28a0d918-5967-4847-8262-2ba796361b2e.png");
+            background-repeat: no-repeat;
+            background-position: center 42%;
+            background-size: 88% auto;
+            border: none;
+            box-shadow:
+                inset 0 0 0 1px rgba(255,255,255,0.4),
+                inset 0 0 15px rgba(0,0,0,1),
+                inset 2px 2px 4px rgba(255,255,255,0.2),
+                inset -2px -2px 4px rgba(0,0,0,0.8);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card-back-inner::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background:
+                radial-gradient(circle at 32% 24%, rgba(255,255,255,0.16), transparent 40%),
+                linear-gradient(105deg, rgba(255,255,255,0.12) 0%, rgba(255,255,255,0) 38%);
+            pointer-events: none;
+        }
+
+        .card-back-hint {
+            position: absolute;
+            left: 50%;
+            bottom: 14px;
+            transform: translateX(-50%);
+            font-family: var(--font-tech);
+            font-size: 0.52rem;
+            letter-spacing: 0.16em;
+            text-transform: uppercase;
+            color: rgba(255,255,255,0.7);
+            text-shadow: 0 1px 6px rgba(0,0,0,0.85);
+            pointer-events: none;
+            white-space: nowrap;
+        }
+
+        
+        .chrome-frame::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(45deg, var(--chrome-highlight-cyan) 0%, transparent 40%, transparent 60%, var(--chrome-highlight-mag) 100%);
+            mix-blend-mode: overlay;
+            pointer-events: none;
+        }
+
+        
+        .chrome-inner-bezel {
+            width: 100%;
+            height: 100%;
+            background: #0a0a0b; 
+            clip-path: polygon(
+                0% 15px, 
+                15px 0%, 
+                calc(100% - 30px) 0%, 
+                100% 30px, 
+                100% calc(100% - 15px), 
+                calc(100% - 15px) 100%, 
+                30px 100%, 
+                0% calc(100% - 30px)
+            );
+            position: relative;
+            
+            box-shadow: 
+                inset 0 0 0 1px rgba(255,255,255,0.4),
+                inset 0 0 15px rgba(0,0,0,1),
+                inset 2px 2px 4px rgba(255,255,255,0.2),
+                inset -2px -2px 4px rgba(0,0,0,0.8);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        
+        .chrome-inner-bezel::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(105deg, rgba(255,255,255,0.1) 0%, rgba(255,255,255,0) 40%);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        
+        .card-content {
+            padding: 1.5rem;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 2;
+        }
+
+        
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            padding-bottom: 0.5rem;
+            margin-bottom: auto;
+        }
+
+        .meta-col {
+            display: flex;
+            flex-direction: column;
+            gap: 2px;
+        }
+
+        .meta-label {
+            font-size: 0.45rem;
+            color: #8a9196;
+            letter-spacing: 0.1em;
+        }
+
+        .meta-data {
+            font-size: 0.65rem;
+            color: #e0e0e0;
+            letter-spacing: 0.05em;
+        }
+
+        .meta-icon {
+            width: 24px;
+            height: 24px;
+            border: 1px solid rgba(255,255,255,0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            
+            background: conic-gradient(from 0deg, var(--chrome-dark), var(--chrome-light), var(--chrome-dark));
+        }
+        .meta-icon::after {
+            content:'';
+            position: absolute;
+            inset: 2px;
+            background: #0a0a0b;
+            border-radius: 50%;
+        }
+
+        
+        .card-visual {
+            position: absolute;
+            top: 36%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(1.24);
+            width: 120px;
+            height: 120px;
+            background:
+                radial-gradient(circle at 32% 28%, rgba(255,255,255,0.14), transparent 62%),
+                conic-gradient(from 30deg, transparent, rgba(255,255,255,0.06), transparent);
+            border: none;
+            border-radius: 0;
+            box-shadow: 0 0 28px rgba(255,255,255,0.06);
+            opacity: 0.95;
+            --outline-stroke: rgba(255,255,255,0.28);
+            --outline-soft: rgba(255,255,255,0.16);
+        }
+
+        .card-visual::before,
+        .card-visual::after,
+        .card-visual .glyph::before,
+        .card-visual .glyph::after {
+            content: '';
+            position: absolute;
+            box-sizing: border-box;
+            border: 1px solid transparent;
+        }
+
+        .card-visual .glyph {
+            position: absolute;
+            inset: 0;
+        }
+
+        .card-visual-image {
+            position: absolute;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            filter: none;
+        }
+
+        .card-visual-plain {
+            background: none;
+            border: none;
+            box-shadow: none;
+            opacity: 1;
+        }
+
+        .card-visual-plain::before,
+        .card-visual-plain::after {
+            display: none;
+        }
+
+        .outline-nail::before {
+            left: 36px;
+            top: 54px;
+            width: 48px;
+            height: 18px;
+            border-color: var(--outline-stroke);
+            border-radius: 10px 10px 14px 14px;
+        }
+        .outline-nail::after {
+            left: 48px;
+            top: 38px;
+            width: 22px;
+            height: 26px;
+            border-color: var(--outline-stroke);
+            border-bottom: none;
+            border-radius: 10px 10px 0 0;
+        }
+        .outline-nail .glyph::before {
+            left: 35px;
+            top: 48px;
+            width: 50px;
+            height: 1px;
+            background: var(--outline-soft);
+            border: none;
+        }
+        .outline-nail .glyph::after {
+            left: 55px;
+            top: 22px;
+            width: 8px;
+            height: 18px;
+            border-color: var(--outline-soft);
+            border-radius: 8px 8px 2px 2px;
+        }
+
+        .outline-uhaul::before {
+            left: 28px;
+            top: 38px;
+            width: 30px;
+            height: 30px;
+            border-color: var(--outline-stroke);
+            border-radius: 50%;
+        }
+        .outline-uhaul::after {
+            left: 54px;
+            top: 51px;
+            width: 40px;
+            height: 10px;
+            border-color: var(--outline-stroke);
+            border-radius: 6px;
+        }
+        .outline-uhaul .glyph::before {
+            left: 76px;
+            top: 58px;
+            width: 9px;
+            height: 12px;
+            border-color: var(--outline-soft);
+            border-radius: 2px;
+        }
+        .outline-uhaul .glyph::after {
+            left: 86px;
+            top: 58px;
+            width: 8px;
+            height: 16px;
+            border-color: var(--outline-soft);
+            border-radius: 2px;
+        }
+
+        .outline-photo::before {
+            left: 27px;
+            top: 20px;
+            width: 66px;
+            height: 82px;
+            border-color: var(--outline-stroke);
+            border-radius: 2px;
+        }
+        .outline-photo::after {
+            left: 35px;
+            top: 28px;
+            width: 50px;
+            height: 66px;
+            border-color: var(--outline-soft);
+            border-radius: 2px;
+        }
+        .outline-photo .glyph::before {
+            left: 56px;
+            top: 46px;
+            width: 8px;
+            height: 8px;
+            border-color: var(--outline-stroke);
+            border-radius: 50%;
+        }
+        .outline-photo .glyph::after {
+            left: 48px;
+            top: 58px;
+            width: 24px;
+            height: 14px;
+            border-color: var(--outline-soft);
+            border-bottom: none;
+            border-radius: 12px 12px 0 0;
+        }
+
+        .outline-carabiner::before {
+            left: 39px;
+            top: 22px;
+            width: 42px;
+            height: 76px;
+            border-color: var(--outline-stroke);
+            border-radius: 24px;
+        }
+        .outline-carabiner::after {
+            left: 69px;
+            top: 40px;
+            width: 1px;
+            height: 34px;
+            background: var(--outline-stroke);
+            border: none;
+        }
+        .outline-carabiner .glyph::before {
+            left: 49px;
+            top: 34px;
+            width: 22px;
+            height: 52px;
+            border-color: var(--outline-soft);
+            border-radius: 14px;
+        }
+        .outline-carabiner .glyph::after {
+            left: 54px;
+            top: 72px;
+            width: 12px;
+            height: 1px;
+            background: var(--outline-soft);
+            border: none;
+        }
+
+        .outline-socks::before {
+            left: 34px;
+            top: 30px;
+            width: 18px;
+            height: 48px;
+            border-color: var(--outline-stroke);
+            border-radius: 10px 10px 4px 4px;
+            transform: rotate(-8deg);
+        }
+        .outline-socks::after {
+            left: 66px;
+            top: 40px;
+            width: 18px;
+            height: 48px;
+            border-color: var(--outline-stroke);
+            border-radius: 10px 10px 4px 4px;
+            transform: rotate(9deg);
+        }
+        .outline-socks .glyph::before {
+            left: 27px;
+            top: 66px;
+            width: 26px;
+            height: 12px;
+            border-color: var(--outline-soft);
+            border-radius: 8px;
+        }
+        .outline-socks .glyph::after {
+            left: 57px;
+            top: 77px;
+            width: 26px;
+            height: 12px;
+            border-color: var(--outline-soft);
+            border-radius: 8px;
+        }
+
+        .outline-popper::before {
+            left: 43px;
+            top: 35px;
+            width: 34px;
+            height: 50px;
+            border-color: var(--outline-stroke);
+            border-radius: 8px;
+        }
+        .outline-popper::after {
+            left: 49px;
+            top: 25px;
+            width: 22px;
+            height: 12px;
+            border-color: var(--outline-stroke);
+            border-radius: 4px;
+        }
+        .outline-popper .glyph::before {
+            left: 53px;
+            top: 33px;
+            width: 14px;
+            height: 8px;
+            border-color: var(--outline-soft);
+            border-radius: 3px;
+        }
+        .outline-popper .glyph::after {
+            left: 51px;
+            top: 54px;
+            width: 18px;
+            height: 1px;
+            background: var(--outline-soft);
+            border: none;
+        }
+
+        .outline-prep::before {
+            left: 36px;
+            top: 28px;
+            width: 48px;
+            height: 58px;
+            border-color: var(--outline-stroke);
+            border-radius: 10px;
+        }
+        .outline-prep::after {
+            left: 42px;
+            top: 50px;
+            width: 36px;
+            height: 14px;
+            border-color: var(--outline-soft);
+            border-radius: 3px;
+        }
+        .outline-prep .glyph::before {
+            left: 50px;
+            top: 36px;
+            width: 20px;
+            height: 1px;
+            background: var(--outline-stroke);
+            border: none;
+        }
+        .outline-prep .glyph::after {
+            left: 59px;
+            top: 27px;
+            width: 1px;
+            height: 20px;
+            background: var(--outline-stroke);
+            border: none;
+        }
+
+        .outline-gag::before {
+            left: 34px;
+            top: 34px;
+            width: 52px;
+            height: 52px;
+            border-color: var(--outline-stroke);
+            border-radius: 50%;
+        }
+        .outline-gag::after {
+            left: 20px;
+            top: 58px;
+            width: 80px;
+            height: 1px;
+            background: var(--outline-soft);
+            border: none;
+        }
+        .outline-gag .glyph::before {
+            left: 50px;
+            top: 50px;
+            width: 20px;
+            height: 16px;
+            border-color: var(--outline-soft);
+            border-radius: 4px;
+        }
+        .outline-gag .glyph::after {
+            left: 58px;
+            top: 56px;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--outline-stroke);
+            border: none;
+        }
+
+        .outline-condom::before {
+            left: 46px;
+            top: 24px;
+            width: 28px;
+            height: 72px;
+            border-color: var(--outline-stroke);
+            border-radius: 18px;
+        }
+        .outline-condom::after {
+            left: 42px;
+            top: 24px;
+            width: 36px;
+            height: 8px;
+            border-color: var(--outline-soft);
+            border-radius: 6px;
+        }
+        .outline-condom .glyph::before {
+            left: 56px;
+            top: 19px;
+            width: 8px;
+            height: 8px;
+            border-color: var(--outline-stroke);
+            border-radius: 50%;
+        }
+        .outline-condom .glyph::after {
+            left: 48px;
+            top: 84px;
+            width: 24px;
+            height: 10px;
+            border-color: var(--outline-soft);
+            border-top: none;
+            border-radius: 0 0 10px 10px;
+        }
+
+        .outline-costco::before {
+            left: 26px;
+            top: 34px;
+            width: 68px;
+            height: 42px;
+            border-color: var(--outline-stroke);
+            border-radius: 6px;
+        }
+        .outline-costco::after {
+            left: 26px;
+            top: 47px;
+            width: 68px;
+            height: 10px;
+            background: linear-gradient(90deg, transparent, var(--outline-soft), transparent);
+            border: none;
+        }
+        .outline-costco .glyph::before {
+            left: 34px;
+            top: 63px;
+            width: 30px;
+            height: 1px;
+            background: var(--outline-stroke);
+            border: none;
+        }
+        .outline-costco .glyph::after {
+            left: 76px;
+            top: 61px;
+            width: 12px;
+            height: 12px;
+            border-color: var(--outline-soft);
+            border-radius: 50%;
+        }
+
+        .outline-cookie::before {
+            left: 26px;
+            top: 30px;
+            width: 68px;
+            height: 58px;
+            border-color: var(--outline-stroke);
+            border-radius: 8px;
+        }
+        .outline-cookie::after {
+            left: 34px;
+            top: 38px;
+            width: 52px;
+            height: 42px;
+            background: repeating-linear-gradient(
+                to bottom,
+                transparent 0 6px,
+                var(--outline-soft) 6px 7px
+            );
+            border: none;
+        }
+        .outline-cookie .glyph::before {
+            left: 80px;
+            top: 24px;
+            width: 14px;
+            height: 14px;
+            border-color: var(--outline-soft);
+            border-radius: 50%;
+            background: #0a0a0b;
+        }
+        .outline-cookie .glyph::after {
+            left: 92px;
+            top: 32px;
+            width: 4px;
+            height: 4px;
+            border-radius: 50%;
+            background: var(--outline-soft);
+            border: none;
+        }
+
+        
+        .card-body {
+            position: relative;
+        }
+
+        
+        .card-title {
+            font-family: var(--font-display);
+            font-size: 2.5rem;
+            font-style: italic;
+            font-weight: 300;
+            line-height: 0.9;
+            margin-bottom: 0.75rem;
+            background: linear-gradient(to bottom, #ffffff 0%, #a0a5ab 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            
+            filter: drop-shadow(0 4px 6px rgba(0,0,0,0.8));
+        }
+
+        .card-desc {
+            font-size: 0.6rem;
+            line-height: 1.5;
+            color: #a0a5ab;
+            max-width: 90%;
+        }
+
+        
+        .structural-line {
+            position: absolute;
+            background: rgba(255,255,255,0.1);
+        }
+        .line-v { width: 1px; height: 100%; top: 0; right: 1rem; }
+        
+        
+        .barcode {
+            display: flex;
+            height: 12px;
+            gap: 1px;
+            margin-top: 1rem;
+            opacity: 0.5;
+        }
+        .bar { background: #fff; height: 100%; }
+
+        
+        footer {
+            padding: 1.5rem 2rem;
+            display: flex;
+            justify-content: center;
+            gap: 2rem;
+            z-index: 10;
+        }
+
+        body.show-all footer {
+            display: none;
+        }
+
+        body.single-card footer {
+            display: none;
+        }
+
+        .route-loading-indicator {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 40;
+            pointer-events: none;
+            background: rgba(0,0,0,0.28);
+        }
+
+        body.route-loading.single-card .route-loading-indicator {
+            display: flex;
+        }
+
+        .route-loading-indicator span {
+            font-family: var(--font-tech);
+            font-size: 0.62rem;
+            text-transform: uppercase;
+            letter-spacing: 0.22em;
+            color: rgba(255,255,255,0.82);
+            text-shadow: 0 0 10px rgba(255,255,255,0.24);
+        }
+
+        .nav-dot {
+            width: 6px;
+            height: 6px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 50%;
+            transition: all 0.3s ease;
+        }
+        .nav-dot.active {
+            background: #fff;
+            box-shadow: 0 0 8px rgba(255,255,255,0.8);
+            transform: scale(1.5);
+        }
+
+    </style>
+</head>
+<body vid="9">
+
+    <header vid="10">
+        <div class="hud-block" vid="11">
+            <span class="hud-label" vid="12">System</span>
+            <span class="hud-value" vid="13">AETHER.CORE</span>
+        </div>
+        <div class="hud-block" style="text-align: right;" vid="14">
+            <span class="hud-label" vid="15">Holdings</span>
+            <span class="hud-value" vid="16">11/11</span>
+        </div>
+    </header>
+
+    <main vid="17">
+        <div class="card-container" vid="18">
+            <div class="card" vid="19">
+                <div class="chrome-frame" vid="20">
+                    <div class="chrome-inner-bezel" vid="21">
+                        <div class="card-visual card-visual-plain" vid="22"><img class="card-visual-image" src="nailclipper.png" alt="Nail clipper icon"></div>
+                        <div class="structural-line line-v" vid="23"></div>
+                        <div class="card-content" vid="24">
+                            <div class="card-header" vid="25">
+                                <div class="meta-col" vid="26">
+                                    <span class="meta-label" vid="27">SEQUENCE</span>
+                                    <span class="meta-data" vid="28">No. 001/011</span>
+                                </div>
+                                <div class="meta-icon" vid="29"><div style="width: 4px; height: 4px; background: #fff; position: absolute; z-index: 2;" vid="30"></div></div>
+                            </div>
+                            <div class="card-body" vid="31">
+                                <h2 class="card-title" vid="32">Nail<br vid="33">Clippers</h2>
+                                <p class="card-desc" vid="34"><strong>The Fortune:</strong> Top-Tier Courteous Lover / Peak WLW Etiquette<br><br><strong>The Toast:</strong> You just picked the holy grail of lesbian respect. This means your love life in this half of the year will be smooth, considerate, and completely scratch-free. Here's to short nails, big hearts, and being the gentlest lover in Bushwick!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-container" vid="43">
+            <div class="card" vid="44">
+                <div class="chrome-frame" vid="45">
+                    <div class="chrome-inner-bezel" vid="46">
+                        <div class="card-visual card-visual-plain" vid="47"><img class="card-visual-image" src="uhaul.png" alt="U-Haul key icon"></div>
+                        <div class="structural-line line-v" vid="48"></div>
+                        <div class="card-content" vid="49">
+                            <div class="card-header" vid="50">
+                                <div class="meta-col" vid="51">
+                                    <span class="meta-label" vid="52">SEQUENCE</span>
+                                    <span class="meta-data" vid="53">No. 002/011</span>
+                                </div>
+                                <div class="meta-icon" style="border-radius: 0; transform: rotate(45deg);" vid="54"><div style="width: 4px; height: 4px; background: #fff; position: absolute; z-index: 2;" vid="55"></div></div>
+                            </div>
+                            <div class="card-body" vid="56">
+                                <h2 class="card-title" vid="57">U-Haul<br vid="58">Key</h2>
+                                <p class="card-desc" vid="59"><strong>The Fortune:</strong> Second-Date Co-habitation / Speed-Dating Champion<br><br><strong>The Toast:</strong> The ultimate symbol of lesbian destiny! Your love life is about to go from 0 to 60, fast. You are 100% packing up your life, your cats, and your plants to move in by next week. Safe travels, smooth packing, and may your next lease be a joint one!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-container" vid="68">
+            <div class="card" vid="69">
+                <div class="chrome-frame" vid="70">
+                    <div class="chrome-inner-bezel" vid="71">
+                        <div class="card-visual card-visual-plain" vid="72"><img class="card-visual-image" src="portrait.png" alt="Portrait icon"></div>
+                        <div class="structural-line line-v" vid="73"></div>
+                        <div class="card-content" vid="74">
+                            <div class="card-header" vid="75">
+                                <div class="meta-col" vid="76">
+                                    <span class="meta-label" vid="77">SEQUENCE</span>
+                                    <span class="meta-data" vid="78">No. 003/011</span>
+                                </div>
+                                <div class="meta-icon" vid="79"><div style="width: 8px; height: 1px; background: #fff; position: absolute; z-index: 2;" vid="80"></div></div>
+                            </div>
+                            <div class="card-body" vid="81">
+                                <h2 class="card-title" vid="82">First Dutch<br vid="83">Lesbian</h2>
+                                <p class="card-desc" vid="84"><strong>The Fortune:</strong> The Intellectual Paradigm / Bushwick Mother Superior<br><br><strong>The Toast:</strong> You didn't just pick a photo; you picked history. Your next six months will be defined by peak sapiosexual energy. You'll dominate late-night philosophical debates, feminist book clubs, and art gallery openings. May your mind stay sharp, your theories stay radical, and may you forever be the smartest person in the room!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-container">
+            <div class="card">
+                <div class="chrome-frame">
+                    <div class="chrome-inner-bezel">
+                        <div class="card-visual card-visual-plain"><img class="card-visual-image" src="carabiner.png" alt="Carabiner icon"></div>
+                        <div class="structural-line line-v"></div>
+                        <div class="card-content">
+                            <div class="card-header">
+                                <div class="meta-col">
+                                    <span class="meta-label">SEQUENCE</span>
+                                    <span class="meta-data">No. 004/011</span>
+                                </div>
+                                <div class="meta-icon"><div style="width: 4px; height: 4px; background: #fff; position: absolute; z-index: 2;"></div></div>
+                            </div>
+                            <div class="card-body">
+                                <h2 class="card-title">Carabiner</h2>
+                                <p class="card-desc"><strong>The Fortune:</strong> The Ultimate Key-Holder / Unshakable Security<br><br><strong>The Toast:</strong> A certified badge of honor clipped straight to your belt loop. Your life for the rest of 2026 is locked in. Your keys aren't dropping, your career isn't slipping, and your friendships are unshakeable. Stay grounded, stay reliable, and keep it locked!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-container">
+            <div class="card">
+                <div class="chrome-frame">
+                    <div class="chrome-inner-bezel">
+                        <div class="card-visual card-visual-plain"><img class="card-visual-image" src="socks.png" alt="Socks icon"></div>
+                        <div class="structural-line line-v"></div>
+                        <div class="card-content">
+                            <div class="card-header">
+                                <div class="meta-col">
+                                    <span class="meta-label">SEQUENCE</span>
+                                    <span class="meta-data">No. 005/011</span>
+                                </div>
+                                <div class="meta-icon"><div style="width: 6px; height: 1px; background: #fff; position: absolute; z-index: 2;"></div></div>
+                            </div>
+                            <div class="card-body">
+                                <h2 class="card-title">Worn Nike<br>White Socks</h2>
+                                <p class="card-desc"><strong>The Fortune:</strong> Main Character Energy / The Algorithm's Favorite<br><br><strong>The Toast:</strong> You just tapped into the ultimate internet thirst-trap code. For the next six months, you are the definition of a local thirst object. Your Hinge is going to blow up, and the techno dancefloor will part for you. Keep the gym routine tight, the socks white, and the DMs overflowing!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-container">
+            <div class="card">
+                <div class="chrome-frame">
+                    <div class="chrome-inner-bezel">
+                        <div class="card-visual card-visual-plain"><img class="card-visual-image" src="popper.png" alt="Popper bottle icon"></div>
+                        <div class="structural-line line-v"></div>
+                        <div class="card-content">
+                            <div class="card-header">
+                                <div class="meta-col">
+                                    <span class="meta-label">SEQUENCE</span>
+                                    <span class="meta-data">No. 006/011</span>
+                                </div>
+                                <div class="meta-icon"><div style="width: 4px; height: 4px; background: #fff; position: absolute; z-index: 2;"></div></div>
+                            </div>
+                            <div class="card-body">
+                                <h2 class="card-title">Popper<br>(Red Bottle)</h2>
+                                <p class="card-desc"><strong>The Fortune:</strong> Party Royalty / Pure Escapism<br><br><strong>The Toast:</strong> The absolute life of the party! This pick means your life for the rest of the year has zero dull moments. No anxiety, no work stress - just high-octane weekend energy. Stay loose, stay euphoric, and may your nights out always hit the sweet spot!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-container">
+            <div class="card">
+                <div class="chrome-frame">
+                    <div class="chrome-inner-bezel">
+                        <div class="card-visual card-visual-plain"><img class="card-visual-image" src="prep.png" alt="PrEP bottle icon"></div>
+                        <div class="structural-line line-v"></div>
+                        <div class="card-content">
+                            <div class="card-header">
+                                <div class="meta-col">
+                                    <span class="meta-label">SEQUENCE</span>
+                                    <span class="meta-data">No. 007/011</span>
+                                </div>
+                                <div class="meta-icon"><div style="width: 2px; height: 6px; background: #fff; position: absolute; z-index: 2;"></div></div>
+                            </div>
+                            <div class="card-body">
+                                <h2 class="card-title">PrEP / PEP<br>Bottle</h2>
+                                <p class="card-desc"><strong>The Fortune:</strong> Bulletproof Health / Pure Reality Check<br><br><strong>The Toast:</strong> Modern science's greatest gift to the community. Your health is locked down, and your boundaries are iron-clad. Stay safe, stay smart, and have fun without the drama!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-container">
+            <div class="card">
+                <div class="chrome-frame">
+                    <div class="chrome-inner-bezel">
+                        <div class="card-visual card-visual-plain"><img class="card-visual-image" src="gag.png" alt="Gag icon"></div>
+                        <div class="structural-line line-v"></div>
+                        <div class="card-content">
+                            <div class="card-header">
+                                <div class="meta-col">
+                                    <span class="meta-label">SEQUENCE</span>
+                                    <span class="meta-data">No. 008/011</span>
+                                </div>
+                                <div class="meta-icon"><div style="width: 8px; height: 1px; background: #fff; position: absolute; z-index: 2;"></div></div>
+                            </div>
+                            <div class="card-body">
+                                <h2 class="card-title">The Gag</h2>
+                                <p class="card-desc"><strong>The Fortune:</strong> Less Talk, More Action / Post-Drama Era<br><br><strong>The Toast:</strong> Things just got interesting. This predicts a half-year of cutting out the yap and focusing on what actually matters. You are officially entering your "silent but deadly" era - no gossip, just physical manifestation. Keep the haters quiet and the late-night activities loud!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-container">
+            <div class="card">
+                <div class="chrome-frame">
+                    <div class="chrome-inner-bezel">
+                        <div class="card-visual card-visual-plain"><img class="card-visual-image" src="condom.png" alt="Condom icon"></div>
+                        <div class="structural-line line-v"></div>
+                        <div class="card-content">
+                            <div class="card-header">
+                                <div class="meta-col">
+                                    <span class="meta-label">SEQUENCE</span>
+                                    <span class="meta-data">No. 009/011</span>
+                                </div>
+                                <div class="meta-icon"><div style="width: 4px; height: 4px; background: #fff; position: absolute; z-index: 2;"></div></div>
+                            </div>
+                            <div class="card-body">
+                                <h2 class="card-title">Condom</h2>
+                                <p class="card-desc"><strong>The Fortune:</strong> High-Quality Encounters / Responsible Sex Icon<br><br><strong>The Toast:</strong> The sexiest badge of maturity an adult can hold. This guarantees a steady stream of romantic encounters - with peak safety and zero regrets. May your nights be passionate, your partners respectful, and your safety net 100% secure.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-container">
+            <div class="card">
+                <div class="chrome-frame">
+                    <div class="chrome-inner-bezel">
+                        <div class="card-visual card-visual-plain"><img class="card-visual-image" src="costco.png" alt="Costco card icon"></div>
+                        <div class="structural-line line-v"></div>
+                        <div class="card-content">
+                            <div class="card-header">
+                                <div class="meta-col">
+                                    <span class="meta-label">SEQUENCE</span>
+                                    <span class="meta-data">No. 010/011</span>
+                                </div>
+                                <div class="meta-icon"><div style="width: 4px; height: 4px; background: #fff; position: absolute; z-index: 2;"></div></div>
+                            </div>
+                            <div class="card-body">
+                                <h2 class="card-title">Costco<br>Membership Card</h2>
+                                <p class="card-desc"><strong>The Fortune:</strong> The "Closeted Straight" Coming Out / Suburban Awakening<br><br><strong>The Toast:</strong> Finally! The ultimate mirror that shatters all Bushwick indie pretension. Your days of "still exploring" are over. It's time to embrace your true self: a suburban king who loves bulk buying, coupon clipping, and domestic stability. May your protein powder always be on sale, your $1.50 hot dogs be plentiful, and may you confidently drive your Subaru into the sunset. Welcome home, bro!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-container">
+            <div class="card">
+                <div class="chrome-frame">
+                    <div class="chrome-inner-bezel">
+                        <div class="card-visual card-visual-plain"><img class="card-visual-image" src="rainbow%20cookie.png" alt="Rainbow cookie icon"></div>
+                        <div class="structural-line line-v"></div>
+                        <div class="card-content">
+                            <div class="card-header">
+                                <div class="meta-col">
+                                    <span class="meta-label">SEQUENCE</span>
+                                    <span class="meta-data">No. 011/011</span>
+                                </div>
+                                <div class="meta-icon"><div style="width: 4px; height: 4px; background: #fff; position: absolute; z-index: 2;"></div></div>
+                            </div>
+                            <div class="card-body">
+                                <h2 class="card-title">Rainbow<br>Cookie</h2>
+                                <p class="card-desc"><strong>The Fortune:</strong> The "Best of Both Worlds" Bi Icon / Universal Crowd Pleaser<br><br><strong>The Toast:</strong> The ultimate snack for bisexuals and peacekeepers. You want it all, and you're going to get it. Your charm is at an all-time high, and you have a front-row seat to every perspective. May you navigate both worlds, stay well-fed, and keep being the sweetest thing in Brooklyn!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <div class="route-loading-indicator"><span>Loading Card...</span></div>
+
+    <footer vid="93">
+        <div class="nav-dot active"></div>
+    </footer>
+
+    <script vid="97">
+        const main = document.querySelector('main');
+        const body = document.body;
+        const footer = document.querySelector('footer');
+        const cards = document.querySelectorAll('.card-container');
+        const routeImageCache = new Map();
+        const cardSlugs = [
+            'nailclippers',
+            'uhaulkey',
+            'firstdutchlesbian',
+            'carabiner',
+            'wornnikewhitesocks',
+            'popper',
+            'preppep',
+            'gag',
+            'condom',
+            'costcomembershipcard',
+            'rainbowcookie',
+        ];
+        const slugToIndex = Object.fromEntries(cardSlugs.map((slug, index) => [slug, index]));
+        const slugForIndex = (index) => cardSlugs[index] || cardSlugs[0];
+        const pathLower = window.location.pathname.toLowerCase();
+        const isFileProtocol = window.location.protocol === 'file:';
+        const supportsPathRouting = !isFileProtocol;
+        const basePrefix = pathLower.includes('/index/') || pathLower.endsWith('/index') ? '/index' : '';
+
+        function updateRouteSlug(slug, replace = true) {
+            if (!supportsPathRouting) {
+                const nextHash = `#${slug}`;
+                if (window.location.hash === nextHash) return;
+                if (replace) {
+                    window.history.replaceState(null, '', nextHash);
+                } else {
+                    window.location.hash = nextHash;
+                }
+                return;
+            }
+
+            const nextPath = `${basePrefix || '/index'}/${slug}`;
+            if (window.location.pathname === nextPath) return;
+            const updater = replace ? window.history.replaceState : window.history.pushState;
+            updater.call(window.history, null, '', nextPath);
+        }
+
+        function showAllView() {
+            body.classList.add('show-all');
+            body.classList.remove('single-card');
+            cards.forEach((container) => {
+                container.classList.remove('route-active');
+                const card = container.querySelector('.card');
+                card.classList.remove('is-flipped');
+            });
+            updateRouteSlug('all', true);
+        }
+
+        function showSingleCard(index, smooth = false) {
+            body.classList.remove('show-all');
+            body.classList.add('single-card');
+            const safeIndex = Math.max(0, Math.min(index, cards.length - 1));
+            body.classList.add('route-loading');
+            cards.forEach((container, i) => {
+                container.classList.toggle('route-active', i === safeIndex);
+            });
+            requestAnimationFrame(() => {
+                cards[safeIndex].scrollIntoView({
+                    behavior: smooth ? 'smooth' : 'auto',
+                    inline: 'center',
+                    block: 'nearest',
+                });
+            });
+            dots.forEach((dot, i) => dot.classList.toggle('active', i === safeIndex));
+            updateRouteSlug(slugForIndex(safeIndex), true);
+
+            const activeImg = cards[safeIndex].querySelector('.card-visual-image');
+            if (!activeImg) {
+                setTimeout(() => body.classList.remove('route-loading'), 120);
+                return;
+            }
+
+            const src = activeImg.getAttribute('src') || '';
+            if (activeImg.complete || routeImageCache.get(src)) {
+                routeImageCache.set(src, true);
+                setTimeout(() => body.classList.remove('route-loading'), 120);
+                return;
+            }
+
+            const clearLoading = () => {
+                routeImageCache.set(src, true);
+                body.classList.remove('route-loading');
+                activeImg.removeEventListener('load', clearLoading);
+                activeImg.removeEventListener('error', clearLoading);
+            };
+            activeImg.addEventListener('load', clearLoading, { once: true });
+            activeImg.addEventListener('error', clearLoading, { once: true });
+        }
+
+        function getRouteSlug() {
+            const segments = window.location.pathname.toLowerCase().split('/').filter(Boolean);
+            const lastSegment = segments[segments.length - 1] || '';
+            if (lastSegment && !lastSegment.endsWith('.html')) return lastSegment;
+            const hashSlug = window.location.hash.replace('#', '').toLowerCase();
+            return hashSlug || cardSlugs[0];
+        }
+
+        cards.forEach((container, index) => {
+            container.dataset.slug = cardSlugs[index];
+            const card = container.querySelector('.card');
+            const backFace = document.createElement('div');
+            backFace.className = 'card-back-face';
+            backFace.innerHTML = '<div class="card-back-inner"><div class="card-back-hint">Flip to reveal</div></div>';
+            card.appendChild(backFace);
+
+            card.addEventListener('click', (event) => {
+                if (Math.abs(main.scrollLeft - main.dataset.lastScrollLeft) > 4) {
+                    return;
+                }
+                event.stopPropagation();
+                card.classList.toggle('is-flipped');
+            });
+        });
+
+        main.dataset.lastScrollLeft = main.scrollLeft;
+        main.addEventListener('scroll', () => {
+            main.dataset.lastScrollLeft = main.scrollLeft;
+        });
+
+        for (let i = 1; i < cards.length; i += 1) {
+            const dot = document.createElement('div');
+            dot.className = 'nav-dot';
+            footer.appendChild(dot);
+        }
+        const dots = document.querySelectorAll('.nav-dot');
+        dots.forEach((dot, index) => {
+            dot.addEventListener('click', () => showSingleCard(index, true));
+        });
+
+        const initialSlug = getRouteSlug();
+        if (initialSlug === 'all') {
+            showAllView();
+        } else {
+            showSingleCard(slugToIndex[initialSlug] ?? 0, false);
+        }
+
+        main.addEventListener('scroll', () => {
+            if (body.classList.contains('show-all') || body.classList.contains('single-card')) return;
+            let index = Math.round(main.scrollLeft / cards[0].offsetWidth);
+            if (index < 0) index = 0;
+            if (index >= dots.length) index = dots.length - 1;
+            
+            dots.forEach((dot, i) => {
+                dot.classList.toggle('active', i === index);
+            });
+            updateRouteSlug(slugForIndex(index), true);
+        });
+
+        window.addEventListener('popstate', () => {
+            const slug = getRouteSlug();
+            if (slug === 'all') {
+                showAllView();
+                return;
+            }
+            showSingleCard(slugToIndex[slug] ?? 0, false);
+        });
+    </script>
+
+</body></html>
