@@ -1275,8 +1275,6 @@
             body.classList.remove('single-card');
             cards.forEach((container) => {
                 container.classList.remove('route-active');
-                const card = container.querySelector('.card');
-                card.classList.remove('is-flipped');
             });
             updateRouteSlug('all', true);
         }
@@ -1333,6 +1331,7 @@
         cards.forEach((container, index) => {
             container.dataset.slug = cardSlugs[index];
             const card = container.querySelector('.card');
+            card.classList.add('is-flipped');
             const backFace = document.createElement('div');
             backFace.className = 'card-back-face';
             backFace.innerHTML = '<div class="card-back-inner"><div class="card-back-hint">Flip to reveal</div></div>';
