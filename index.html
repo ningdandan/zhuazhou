@@ -7,6 +7,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@1,300;1,600&amp;family=JetBrains+Mono:wght@100;400;700&amp;family=Syncopate:wght@400;700&amp;display=swap" rel="stylesheet" vid="7">
     <style vid="8">
         :root {
+            --card-ratio: 5 / 7;
             
             --env-1: #aab0b4;
             --env-2: #b5a8a4;
@@ -135,16 +136,16 @@
             scroll-snap-align: center;
             flex-shrink: 0;
             perspective: 1000px;
-            width: 75vw;
-            max-width: 340px;
-            aspect-ratio: 0.64; 
+            width: min(82vw, calc((100vh - 11rem) * (5 / 7)));
+            max-width: 360px;
+            aspect-ratio: var(--card-ratio);
             position: relative;
         }
 
         body.show-all .card-container {
-            width: min(30vw, 320px);
-            min-width: 260px;
-            max-width: 320px;
+            width: min(30vw, 300px);
+            min-width: 190px;
+            max-width: 300px;
             animation: none;
         }
 
@@ -155,9 +156,45 @@
 
         body.single-card .card-container.route-active {
             display: block;
-            width: 75vw;
-            max-width: 340px;
+            width: min(90vw, calc((100vh - 8.5rem) * (5 / 7)));
+            max-width: 380px;
             min-width: 0;
+        }
+
+        @media (max-width: 768px) {
+            header {
+                padding: 1rem 1rem 0.75rem;
+            }
+
+            main {
+                padding: 0 50vw 0 1rem;
+                gap: 1rem;
+            }
+
+            body.show-all main {
+                padding: 1rem;
+                gap: 1rem;
+            }
+
+            body.single-card main {
+                padding: 0 0.75rem;
+            }
+
+            .card-container {
+                width: min(86vw, calc((100vh - 9.5rem) * (5 / 7)));
+                max-width: 340px;
+            }
+
+            body.show-all .card-container {
+                width: calc(50% - 0.5rem);
+                min-width: 0;
+                max-width: none;
+            }
+
+            body.single-card .card-container.route-active {
+                width: min(92vw, calc((100vh - 7.75rem) * (5 / 7)));
+                max-width: 340px;
+            }
         }
 
         .card {
@@ -266,7 +303,7 @@
                 0% calc(100% - 30px)
             );
             background-color: #000;
-            background-image: url("file:///Users/ada/.cursor/projects/Users-ada-Downloads-zhuazhou/assets/image-28a0d918-5967-4847-8262-2ba796361b2e.png");
+            background-image: url("logo.png");
             background-repeat: no-repeat;
             background-position: center 42%;
             background-size: 88% auto;
