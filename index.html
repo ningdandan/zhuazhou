@@ -98,6 +98,27 @@
             text-shadow: 0 0 10px rgba(255,255,255,0.3);
         }
 
+        .route-switcher {
+            margin-top: 0.45rem;
+            min-width: 170px;
+            width: 170px;
+            border: 1px solid rgba(255,255,255,0.28);
+            background: rgba(7, 8, 10, 0.72);
+            color: rgba(255,255,255,0.92);
+            font-family: var(--font-tech);
+            font-size: 0.58rem;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            padding: 0.35rem 0.45rem;
+            border-radius: 4px;
+            outline: none;
+        }
+
+        .route-switcher:focus {
+            border-color: rgba(255,255,255,0.55);
+            box-shadow: 0 0 0 1px rgba(255,255,255,0.24);
+        }
+
         
         main {
             flex: 1;
@@ -164,6 +185,12 @@
         @media (max-width: 768px) {
             header {
                 padding: 1rem 1rem 0.75rem;
+            }
+
+            .route-switcher {
+                min-width: 145px;
+                width: 145px;
+                font-size: 0.54rem;
             }
 
             main {
@@ -982,11 +1009,12 @@
     <header vid="10">
         <div class="hud-block" vid="11">
             <span class="hud-label" vid="12">System</span>
-            <span class="hud-value" vid="13">AETHER.CORE</span>
+            <span class="hud-value" vid="13">OUVRE</span>
         </div>
         <div class="hud-block" style="text-align: right;" vid="14">
             <span class="hud-label" vid="15">Holdings</span>
-            <span class="hud-value" vid="16">11/11</span>
+            <span class="hud-value" vid="16">13/13</span>
+            <select id="route-switcher" class="route-switcher" aria-label="Switch object"></select>
         </div>
     </header>
 
@@ -1001,7 +1029,7 @@
                             <div class="card-header" vid="25">
                                 <div class="meta-col" vid="26">
                                     <span class="meta-label" vid="27">SEQUENCE</span>
-                                    <span class="meta-data" vid="28">No. 001/011</span>
+                                    <span class="meta-data" vid="28">No. 001/013</span>
                                 </div>
                                 <div class="meta-icon" vid="29"><div style="width: 4px; height: 4px; background: #fff; position: absolute; z-index: 2;" vid="30"></div></div>
                             </div>
@@ -1025,7 +1053,7 @@
                             <div class="card-header" vid="50">
                                 <div class="meta-col" vid="51">
                                     <span class="meta-label" vid="52">SEQUENCE</span>
-                                    <span class="meta-data" vid="53">No. 002/011</span>
+                                    <span class="meta-data" vid="53">No. 002/013</span>
                                 </div>
                                 <div class="meta-icon" style="border-radius: 0; transform: rotate(45deg);" vid="54"><div style="width: 4px; height: 4px; background: #fff; position: absolute; z-index: 2;" vid="55"></div></div>
                             </div>
@@ -1049,7 +1077,7 @@
                             <div class="card-header" vid="75">
                                 <div class="meta-col" vid="76">
                                     <span class="meta-label" vid="77">SEQUENCE</span>
-                                    <span class="meta-data" vid="78">No. 003/011</span>
+                                    <span class="meta-data" vid="78">No. 003/013</span>
                                 </div>
                                 <div class="meta-icon" vid="79"><div style="width: 8px; height: 1px; background: #fff; position: absolute; z-index: 2;" vid="80"></div></div>
                             </div>
@@ -1073,7 +1101,7 @@
                             <div class="card-header">
                                 <div class="meta-col">
                                     <span class="meta-label">SEQUENCE</span>
-                                    <span class="meta-data">No. 004/011</span>
+                                    <span class="meta-data">No. 004/013</span>
                                 </div>
                                 <div class="meta-icon"><div style="width: 4px; height: 4px; background: #fff; position: absolute; z-index: 2;"></div></div>
                             </div>
@@ -1097,7 +1125,7 @@
                             <div class="card-header">
                                 <div class="meta-col">
                                     <span class="meta-label">SEQUENCE</span>
-                                    <span class="meta-data">No. 005/011</span>
+                                    <span class="meta-data">No. 005/013</span>
                                 </div>
                                 <div class="meta-icon"><div style="width: 6px; height: 1px; background: #fff; position: absolute; z-index: 2;"></div></div>
                             </div>
@@ -1121,7 +1149,7 @@
                             <div class="card-header">
                                 <div class="meta-col">
                                     <span class="meta-label">SEQUENCE</span>
-                                    <span class="meta-data">No. 006/011</span>
+                                    <span class="meta-data">No. 006/013</span>
                                 </div>
                                 <div class="meta-icon"><div style="width: 4px; height: 4px; background: #fff; position: absolute; z-index: 2;"></div></div>
                             </div>
@@ -1145,7 +1173,7 @@
                             <div class="card-header">
                                 <div class="meta-col">
                                     <span class="meta-label">SEQUENCE</span>
-                                    <span class="meta-data">No. 007/011</span>
+                                    <span class="meta-data">No. 007/013</span>
                                 </div>
                                 <div class="meta-icon"><div style="width: 2px; height: 6px; background: #fff; position: absolute; z-index: 2;"></div></div>
                             </div>
@@ -1169,7 +1197,7 @@
                             <div class="card-header">
                                 <div class="meta-col">
                                     <span class="meta-label">SEQUENCE</span>
-                                    <span class="meta-data">No. 008/011</span>
+                                    <span class="meta-data">No. 008/013</span>
                                 </div>
                                 <div class="meta-icon"><div style="width: 8px; height: 1px; background: #fff; position: absolute; z-index: 2;"></div></div>
                             </div>
@@ -1193,7 +1221,7 @@
                             <div class="card-header">
                                 <div class="meta-col">
                                     <span class="meta-label">SEQUENCE</span>
-                                    <span class="meta-data">No. 009/011</span>
+                                    <span class="meta-data">No. 009/013</span>
                                 </div>
                                 <div class="meta-icon"><div style="width: 4px; height: 4px; background: #fff; position: absolute; z-index: 2;"></div></div>
                             </div>
@@ -1217,7 +1245,7 @@
                             <div class="card-header">
                                 <div class="meta-col">
                                     <span class="meta-label">SEQUENCE</span>
-                                    <span class="meta-data">No. 010/011</span>
+                                    <span class="meta-data">No. 010/013</span>
                                 </div>
                                 <div class="meta-icon"><div style="width: 4px; height: 4px; background: #fff; position: absolute; z-index: 2;"></div></div>
                             </div>
@@ -1241,13 +1269,61 @@
                             <div class="card-header">
                                 <div class="meta-col">
                                     <span class="meta-label">SEQUENCE</span>
-                                    <span class="meta-data">No. 011/011</span>
+                                    <span class="meta-data">No. 011/013</span>
                                 </div>
                                 <div class="meta-icon"><div style="width: 4px; height: 4px; background: #fff; position: absolute; z-index: 2;"></div></div>
                             </div>
                             <div class="card-body">
                                 <h2 class="card-title">Rainbow<br>Cookie</h2>
                                 <p class="card-desc"><strong>The Fortune:</strong> The "Best of Both Worlds" Bi Icon / Universal Crowd Pleaser<br><br><strong>The Toast:</strong> The ultimate snack for bisexuals and peacekeepers. You want it all, and you're going to get it. Your charm is at an all-time high, and you have a front-row seat to every perspective. May you navigate both worlds, stay well-fed, and keep being the sweetest thing in Brooklyn!</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-container">
+            <div class="card">
+                <div class="chrome-frame">
+                    <div class="chrome-inner-bezel">
+                        <div class="card-visual card-visual-plain"><img class="card-visual-image" src="fan.png" alt="Fan icon"></div>
+                        <div class="structural-line line-v"></div>
+                        <div class="card-content">
+                            <div class="card-header">
+                                <div class="meta-col">
+                                    <span class="meta-label">SEQUENCE</span>
+                                    <span class="meta-data">No. 012/013</span>
+                                </div>
+                                <div class="meta-icon"><div style="width: 4px; height: 4px; background: #fff; position: absolute; z-index: 2;"></div></div>
+                            </div>
+                            <div class="card-body">
+                                <h2 class="card-title">Fan</h2>
+                                <p class="card-desc"><strong>The Fortune:</strong> Club Wind Oracle / Night Tempo Controller<br><br><strong>The Toast:</strong> You are entering your peak clubbing era. Doors open easier, playlists land exactly right, and every chaotic night somehow resolves in your favor. When the floor overheats, you reset the room with one flick and keep the party perfectly alive.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="card-container">
+            <div class="card">
+                <div class="chrome-frame">
+                    <div class="chrome-inner-bezel">
+                        <div class="card-visual card-visual-plain"><img class="card-visual-image" src="origin.png" alt="Origin of life necklace icon"></div>
+                        <div class="structural-line line-v"></div>
+                        <div class="card-content">
+                            <div class="card-header">
+                                <div class="meta-col">
+                                    <span class="meta-label">SEQUENCE</span>
+                                    <span class="meta-data">No. 013/013</span>
+                                </div>
+                                <div class="meta-icon"><div style="width: 4px; height: 4px; background: #fff; position: absolute; z-index: 2;"></div></div>
+                            </div>
+                            <div class="card-body">
+                                <h2 class="card-title">Origin of Life</h2>
+                                <p class="card-desc"><strong>The Fortune:</strong> Primal Attraction / Necklace of Temptation<br><br><strong>The Toast:</strong> Sensual and iconic, this pendant carries bold, feminine energy with zero apology. It marks a season of trusting instinct, owning desire, and turning curiosity into connection. Wear it like a signal: your magnetism is on, and the universe got the message.</p>
                             </div>
                         </div>
                     </div>
@@ -1267,6 +1343,7 @@
         const main = document.querySelector('main');
         const body = document.body;
         const footer = document.querySelector('footer');
+        const routeSwitcher = document.querySelector('#route-switcher');
         const cards = document.querySelectorAll('.card-container');
         const routeImageCache = new Map();
         const cardSlugs = [
@@ -1281,6 +1358,23 @@
             'condom',
             'costcomembershipcard',
             'rainbowcookie',
+            'fan',
+            'originoflife',
+        ];
+        const cardLabels = [
+            'Nail Clippers',
+            'U-Haul Key',
+            'First Dutch Lesbian',
+            'Carabiner',
+            'Worn Nike White Socks',
+            'Popper',
+            'PrEP / PEP Bottle',
+            'The Gag',
+            'Condom',
+            'Costco Membership Card',
+            'Rainbow Cookie',
+            'Fan',
+            'Origin of Life',
         ];
         const slugToIndex = Object.fromEntries(cardSlugs.map((slug, index) => [slug, index]));
         const slugForIndex = (index) => cardSlugs[index] || cardSlugs[0];
@@ -1313,6 +1407,7 @@
             cards.forEach((container) => {
                 container.classList.remove('route-active');
             });
+            if (routeSwitcher) routeSwitcher.value = 'all';
             updateRouteSlug('all', true);
         }
 
@@ -1332,6 +1427,7 @@
                 });
             });
             dots.forEach((dot, i) => dot.classList.toggle('active', i === safeIndex));
+            if (routeSwitcher) routeSwitcher.value = slugForIndex(safeIndex);
             updateRouteSlug(slugForIndex(safeIndex), true);
 
             const activeImg = cards[safeIndex].querySelector('.card-visual-image');
@@ -1355,6 +1451,21 @@
             };
             activeImg.addEventListener('load', clearLoading, { once: true });
             activeImg.addEventListener('error', clearLoading, { once: true });
+        }
+
+        if (routeSwitcher) {
+            routeSwitcher.innerHTML = '<option value="all">All Objects</option>' + cardSlugs
+                .map((slug, index) => `<option value="${slug}">${cardLabels[index]}</option>`)
+                .join('');
+
+            routeSwitcher.addEventListener('change', () => {
+                const value = routeSwitcher.value;
+                if (value === 'all') {
+                    showAllView();
+                    return;
+                }
+                showSingleCard(slugToIndex[value] ?? 0, true);
+            });
         }
 
         function getRouteSlug() {
